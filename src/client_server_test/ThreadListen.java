@@ -30,8 +30,7 @@ public class ThreadListen extends Thread{
 		try { s=new Socket (host,PORT);
 			DataInputStream canalLecture = new DataInputStream(s.getInputStream());
 			PrintStream canalEcriture = new PrintStream(s.getOutputStream());
-			System.out.println("Connexion etablie : "+
-			s.getInetAddress()+" port : "+s.getPort());
+			System.out.println("Connexion etablie : "+s.getInetAddress()+" port : "+s.getPort());
 			//NAME SIZE <= 12
 			canalEcriture.print("CONNECT/"+nameP+"/"); canalEcriture.flush();
 			String st;
@@ -55,11 +54,10 @@ public class ThreadListen extends Thread{
 				{
 					st = new String(temp1);
 					st2=st.split("/");      
-					System.out.println(st);
+					System.out.println("RECEIVING : "+st);
 					if(st2[0].contains("OBJECTIVE")) {
 						canalLecture.readFully(temp1, 0, 24);
 						st = new String(temp1);
-						System.out.println(st);
 						pl = st.toCharArray();
 						cpt = 1;
 						tmpx = "";
@@ -79,7 +77,6 @@ public class ThreadListen extends Thread{
 						y=Double.parseDouble(tmpy);
 						Objective o = new Objective(x*20,y*20);
 						pan.setObjective(o);
-						System.out.println("NEW OBJECTiVE :" + x + " - " + y);
 						
 				        //canalEcriture.flush();
 					}else {
@@ -112,18 +109,14 @@ public class ThreadListen extends Thread{
 							
 							newPlayer = new Player(name,x*20,y*20,0,0,2,0);
 							if(welcome) {
-								System.out.println("WELCOMING : name : "+ name + " myname : "+ this.nameP);
 								if(Objects.equals(name, this.nameP)) {
-									System.out.println(" 1st UPDATE");
 									pan.setPlayer(newPlayer);
 									welcome = false;
 								}else {
-									System.out.println("NEW PLAYER : " + name + " - " + x + " - " + y);
 									pan.addMap(name, x*20, y*20);
 								}
 							}else {
 								if(name != this.nameP) {
-									System.out.println("NEW PLAYER : " + name + " - " + x + " - " + y);
 									pan.addMap(name, x*20, y*20);
 								}
 							}
@@ -146,20 +139,13 @@ public class ThreadListen extends Thread{
 									score+=pl[cpt];
 									cpt++;
 								}
-								/*Pattern regex = Pattern.compile("\\D*(\\d*)");
-						        Matcher matcher = regex.matcher(score);
-						        if (matcher.matches() && matcher.groupCount() == 1) {
-						            String digitStr = matcher.group(1);
-						            Integer digit = Integer.parseInt(digitStr);
-						            scoreInt = digit;   
-						        }*/
+
 						        scoreInt = 0;
 						        for (int i=0; i < score.length(); i++) {
 						            char c = score.charAt(i);
 						            if (c < '0' || c > '9') continue;
 						            scoreInt = scoreInt * 10 + c - '0';
 						        }
-						        System.out.println("SCOR : " + name + " : " + scoreInt);
 								if(name != this.nameP) {
 									pan.updateScore(name, scoreInt);
 								}
@@ -188,14 +174,10 @@ public class ThreadListen extends Thread{
 				            playersToRead = digit;  
 				            scoresToRead = digit;
 				        }
-				        /*if(pan.playerMap.containsKey(this.nameP) ) {
-				        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.playerMap.get(this.nameP).score+"/");
-					        System.out.println("sending UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.playerMap.get(this.nameP).score+"/");
-				        }*/
+				        
 			        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.getScore()+"/");
-				        System.out.println("sending UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/");
-			       
-				        //canalEcriture.flush();
+				        System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/");
+
 					}
 					
 					

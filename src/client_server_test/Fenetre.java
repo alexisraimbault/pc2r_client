@@ -1,12 +1,13 @@
 package client_server_test;
 
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "clouc";
+	public String name = "alex";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -18,6 +19,7 @@ public class Fenetre extends JFrame {
   private Panneau pan = new Panneau();
 
   public Fenetre(String host) {
+	  
     this.setTitle("Animation");
     this.setSize(1000, 1000);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,9 +30,9 @@ public class Fenetre extends JFrame {
     	 
         @Override
         public void keyTyped(KeyEvent ke) {
-            System.out.println("typed"+ke.getKeyCode());
+            //System.out.println("typed"+ke.getKeyCode());
         }
-
+        
         @Override
         public void keyPressed(KeyEvent ke) {
             System.out.println("pressed"+ke.getKeyCode());
@@ -43,15 +45,11 @@ public class Fenetre extends JFrame {
             if(ke.getKeyCode() == 39) {
             	pan.anticlock();
             }
-            /*if(ke.getKeyCode() == 83) {
-            	
-            	pan.p.score ++;
-            }*/
         } 
 
         @Override
         public void keyReleased(KeyEvent ke) {
-            System.out.println("released"+ke.getKeyCode());
+            //System.out.println("released"+ke.getKeyCode());
         }
     });
     ThreadListen tl = new ThreadListen(pan, host, name);
