@@ -1,9 +1,12 @@
 package client_server_test;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	
+	public String name = "clouc";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -21,7 +24,37 @@ public class Fenetre extends JFrame {
     this.setLocationRelativeTo(null);
     this.setContentPane(pan);
     this.setVisible(true);
-    ThreadListen tl = new ThreadListen(pan, host);
+    this.addKeyListener(new KeyListener(){
+    	 
+        @Override
+        public void keyTyped(KeyEvent ke) {
+            System.out.println("typed"+ke.getKeyCode());
+        }
+
+        @Override
+        public void keyPressed(KeyEvent ke) {
+            System.out.println("pressed"+ke.getKeyCode());
+            if(ke.getKeyCode() == 32) {
+            	pan.thrust();
+            }
+            if(ke.getKeyCode() == 37) {
+            	pan.clock();
+            }
+            if(ke.getKeyCode() == 39) {
+            	pan.anticlock();
+            }
+            /*if(ke.getKeyCode() == 83) {
+            	
+            	pan.p.score ++;
+            }*/
+        } 
+
+        @Override
+        public void keyReleased(KeyEvent ke) {
+            System.out.println("released"+ke.getKeyCode());
+        }
+    });
+    ThreadListen tl = new ThreadListen(pan, host, name);
 	tl.setPriority(10);
 	tl.start();
     go();
@@ -29,47 +62,20 @@ public class Fenetre extends JFrame {
   
 
   private void go() {
-    // Les coordonnées de départ de notre rond
-    int x = pan.getPosX(), y = pan.getPosY();
-    // Le booléen pour savoir si l'on recule ou non sur l'axe x
-    boolean backX = false;
-    // Le booléen pour savoir si l'on recule ou non sur l'axe y
-    boolean backY = false;
-
-    // Dans cet exemple, j'utilise une boucle while
-    // Vous verrez qu'elle fonctionne très bien
     while (true) {
-      // Si la coordonnée x est inférieure à 1, on avance
-      if (x < 1)
-        backX = false;
-      // Si la coordonnée x est supérieure à la taille du Panneau moins la taille du rond, on recule
-      if (x > pan.getWidth() - 50)
-        backX = true;
-      // Idem pour l'axe y
-      if (y < 1)
-        backY = false;
-      if (y > pan.getHeight() - 50)
-        backY = true;
-
-      // Si on avance, on incrémente la coordonnée
-      // backX est un booléen, donc !backX revient à écrire
-      // if (backX == false)
-      if (!backX)
-        pan.setPosX(++x);
-      // Sinon, on décrémente
-      else
-        pan.setPosX(--x);
-      // Idem pour l'axe Y
-      if (!backY)
-        pan.setPosY(++y);
-      else
-        pan.setPosY(--y);
-
-      // On redessine notre Panneau
-      pan.repaint();
-      // Comme on dit : la pause s'impose ! Ici, trois millièmes de seconde
+    	if(pan.getPlayer() != null) {
+	      pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
+	      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
+	      if(pan.obj != null) {
+		      double distance = Math.sqrt((pan.obj.x-pan.getPlayer().x)*(pan.obj.x-pan.getPlayer().x) + (pan.obj.y-pan.getPlayer().y)*(pan.obj.y-pan.getPlayer().y));
+		      if (distance<25) {
+		    	  pan.p.score ++;
+		      }
+	      }
+	      pan.repaint();
+    	}
       try {
-        Thread.sleep(3);
+        Thread.sleep(30);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
