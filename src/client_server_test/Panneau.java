@@ -21,6 +21,9 @@ public class Panneau extends JPanel {
 	private BufferedImage vaisseau;
 	private Image chest;
 	private Image ennemy;
+	private Image space;
+	private Image planet1;
+	private Image planet2;
 	protected Objective obj;
 	public Player p = null;
 	protected final double turnit = 0.3;
@@ -29,6 +32,9 @@ public class Panneau extends JPanel {
 		try {
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
+			space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
+			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(90, 90, Image.SCALE_SMOOTH );
 			BufferedImage tmpVaisseau = ImageIO.read(new File("vaisseau.png"));
 			int w = tmpVaisseau.getWidth();
 			int h = tmpVaisseau.getHeight();
@@ -49,8 +55,9 @@ public class Panneau extends JPanel {
 	}
 	public void paintComponent(Graphics g) {
 		
-		g.setColor(Color.black);//couleur de fond
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		/*g.setColor(Color.black);//couleur de fond
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());*/
+		g.drawImage(space, 0, 0, null);
 		
   		g.setColor(Color.red);
   		for(Player p : playerMap.values())

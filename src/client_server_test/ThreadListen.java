@@ -122,7 +122,6 @@ public class ThreadListen extends Thread{
 							}
 							playersToRead --;
 						}else {
-							
 							if(scoresToRead > 0 ) {
 								pl = st.toCharArray();
 								cpt = 0;
