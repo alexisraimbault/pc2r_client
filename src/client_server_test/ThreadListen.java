@@ -39,8 +39,8 @@ public class ThreadListen extends Thread{
 			String name;
 			String score;
 			String tmpx;
-			String tmpy;
-			double x;
+			String tmpy, tmpvx, tmpvy;
+			double x, vx, vy;
 			double y;
 			int scoreInt;
 			int cpt;
@@ -54,7 +54,7 @@ public class ThreadListen extends Thread{
 				{
 					st = new String(temp1);
 					st2=st.split("/");      
-					System.out.println("RECEIVING : "+st);
+					//System.out.println("RECEIVING : "+st);
 					if(st2[0].contains("OBJECTIVE")) {
 						canalLecture.readFully(temp1, 0, 24);
 						st = new String(temp1);
@@ -80,75 +80,137 @@ public class ThreadListen extends Thread{
 						
 				        //canalEcriture.flush();
 					}else {
-						if(playersToRead > 0)
-						{
+						if(st2[0].contains("PLANETES")) {
+							canalLecture.readFully(temp1, 0, 24);
+							st = new String(temp1);
 							pl = st.toCharArray();
 							cpt = 0;
-							name = "";
 							tmpx = "";
 							tmpy = "";
-							while((cpt < pl.length) &&(pl[cpt]!='X'))
-							{
-								name+=pl[cpt];
-								cpt++;
-							}
-							cpt++;
-							while((cpt < pl.length) &&(pl[cpt]!='Y'))
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
 							{
 								tmpx+=pl[cpt];
 								cpt++;
 							}
 							x=Double.parseDouble(tmpx);
+							pan.plx1 = x;
 							cpt++;
-							while((cpt < pl.length) &&(pl[cpt]!='|'))
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
 							{
 								tmpy+=pl[cpt];
 								cpt++;
 							}
 							y=Double.parseDouble(tmpy);
+							pan.ply1 = y;
 							
-							newPlayer = new Player(name,x*20,y*20,0,0,2,0);
-							if(welcome) {
-								if(Objects.equals(name, this.nameP)) {
-									pan.setPlayer(newPlayer);
-									welcome = false;
-								}else {
-									pan.addMap(name, x*20, y*20);
-								}
-							}else {
-								if(name != this.nameP) {
-									pan.addMap(name, x*20, y*20);
-								}
+							canalLecture.readFully(temp1, 0, 24);
+							st = new String(temp1);
+							pl = st.toCharArray();
+							cpt = 0;
+							tmpx = "";
+							tmpy = "";
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpx+=pl[cpt];
+								cpt++;
 							}
-							playersToRead --;
+							x=Double.parseDouble(tmpx);
+							pan.plx2 = x;
+							cpt++;
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpy+=pl[cpt];
+								cpt++;
+							}
+							y=Double.parseDouble(tmpy);
+							pan.ply2 = y;
+					        //canalEcriture.flush();
 						}else {
-							if(scoresToRead > 0 ) {
+							if(playersToRead > 0)
+							{
 								pl = st.toCharArray();
 								cpt = 0;
 								name = "";
-								score = "";
-								while((cpt < pl.length) &&(pl[cpt]!=':'))
+								tmpx = "";
+								tmpy = "";
+								while((cpt < pl.length) &&(pl[cpt]!='X'))
 								{
 									name+=pl[cpt];
 									cpt++;
 								}
 								cpt++;
-								while((cpt < pl.length) &&(pl[cpt]!='|'))
+								while((cpt < pl.length) &&(pl[cpt]!='Y'))
 								{
-									score+=pl[cpt];
+									tmpx+=pl[cpt];
 									cpt++;
 								}
-
-						        scoreInt = 0;
-						        for (int i=0; i < score.length(); i++) {
-						            char c = score.charAt(i);
-						            if (c < '0' || c > '9') continue;
-						            scoreInt = scoreInt * 10 + c - '0';
-						        }
-								if(name != this.nameP) {
-									pan.updateScore(name, scoreInt);
+								x=Double.parseDouble(tmpx);
+								cpt++;
+								while((cpt < pl.length) &&(pl[cpt]!='|'))
+								{
+									tmpy+=pl[cpt];
+									cpt++;
 								}
-								scoresToRead --;
+								y=Double.parseDouble(tmpy);
+								
+								newPlayer = new Player(name,x*20,y*20,0,0,2,0);
+								if(welcome) {
+									if(Objects.equals(name, this.nameP)) {
+										pan.setPlayer(newPlayer);
+										welcome = false;
+									}else {
+										pan.addMap(name, x*20, y*20);
+									}
+								}else {
+									if(name != this.nameP) {
+										pan.addMap(name, x*20, y*20);
+									}
+								}
+								playersToRead --;
+							}else {
+								if(scoresToRead > 0 ) {
+									pl = st.toCharArray();
+									cpt = 0;
+									name = "";
+									tmpvx = "";
+									tmpvy = "";
+									score = "";
+									while((cpt < pl.length) &&(pl[cpt]!=':'))
+									{
+										name+=pl[cpt];
+										cpt++;
+									}
+									cpt++;
+									while((cpt < pl.length) &&(pl[cpt]!='|'))
+									{
+										score+=pl[cpt];
+										cpt++;
+									}
+									cpt++;
+									while((cpt < pl.length) &&(pl[cpt]!='|'))
+									{
+										tmpvx+=pl[cpt];
+										cpt++;
+									}
+									cpt++;
+									while((cpt < pl.length) &&(pl[cpt]!='|'))
+									{
+										tmpvy+=pl[cpt];
+										cpt++;
+									}
+									vx=Double.parseDouble(tmpvx);
+									vy=Double.parseDouble(tmpvy);
+							        scoreInt = 0;
+							        for (int i=0; i < score.length(); i++) {
+							            char c = score.charAt(i);
+							            if (c < '0' || c > '9') continue;
+							            scoreInt = scoreInt * 10 + c - '0';
+							        }
+									if(name != this.nameP) {
+										pan.updateScore(name, scoreInt, vx, vy);
+									}
+									scoresToRead --;
+								}
 							}
 						}
 					}
@@ -174,8 +236,8 @@ public class ThreadListen extends Thread{
 				            scoresToRead = digit;
 				        }
 				        
-			        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.getScore()+"/");
-				        System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/");
+			        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
+				        //System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
 
 					}
 					

@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Alex";
+	public String name = "Clou";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -60,15 +60,30 @@ public class Fenetre extends JFrame {
   
 
   private void go() {
+	double d1,d2;
+	double force, angle;
+	
     while (true) {
+    	pan.stepPlayers();
     	if(pan.getPlayer() != null) {
 	      pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
 	      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
-	      if(pan.obj != null) {
-		      double distance = Math.sqrt((pan.obj.x-pan.getPlayer().x)*(pan.obj.x-pan.getPlayer().x) + (pan.obj.y-pan.getPlayer().y)*(pan.obj.y-pan.getPlayer().y));
-		      if (distance<25) {
-		    	  pan.p.score ++;
-		      }
+	      d1 = Math.sqrt((pan.plx1*20 - pan.getPlayer().x)*(pan.plx1*20 - pan.getPlayer().x) + (pan.ply1*20 - pan.getPlayer().y)*(pan.ply1*20 - pan.getPlayer().y));
+	      d2 = Math.sqrt((pan.plx2*20 - pan.getPlayer().x)*(pan.plx2*20 - pan.getPlayer().x) + (pan.ply2*20 - pan.getPlayer().y)*(pan.ply2*20 - pan.getPlayer().y));
+	      if(d1 < 300) {
+	    	force = 150/(d1*d1);
+	    	angle = Math.atan2(Math.abs(pan.plx1*20-pan.getPlayer().x), Math.abs(pan.ply1*20-pan.getPlayer().y));
+	    	 
+	    	pan.getPlayer().vx += force * Math.cos(angle); 
+	    	pan.getPlayer().vy += force * Math.sin(angle);
+	    	  
+	      }
+	      if(d2 < 300) {
+	    	force = 300/(d2*d2);
+	    	angle = Math.atan2(Math.abs(pan.plx2*20-pan.getPlayer().x), Math.abs(pan.ply2*20-pan.getPlayer().y));
+	    	 
+	    	pan.getPlayer().vx += force * Math.cos(angle); 
+	    	pan.getPlayer().vy += force * Math.sin(angle);
 	      }
 	      pan.repaint();
     	}

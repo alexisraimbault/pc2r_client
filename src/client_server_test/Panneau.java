@@ -22,14 +22,27 @@ public class Panneau extends JPanel {
 	private Image chest;
 	private Image ennemy;
 	private Image space;
+	private List<Image> bg;
 	private Image planet1;
+	public double plx1,plx2,ply1,ply2;
 	private Image planet2;
 	protected Objective obj;
 	public Player p = null;
 	protected final double turnit = 0.3;
 	protected final double thrustit = 0.5;
+	protected int cptBG;
+	protected int cptBGint;
 	public Panneau() {
 		try {
+			bg = new ArrayList<Image>();
+			for(int i=0; i<72; i++) {
+				cptBG = 0;
+				cptBGint = 0;
+				if(i<10)
+					bg.add(ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH ));
+				else
+					bg.add(ImageIO.read(new File("background_000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH ));
+			}
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
 			space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
@@ -57,7 +70,15 @@ public class Panneau extends JPanel {
 		
 		/*g.setColor(Color.black);//couleur de fond
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());*/
-		g.drawImage(space, 0, 0, null);
+		g.drawImage(bg.get(cptBG), 0, 0, null);
+		cptBGint++;
+		if(cptBGint%2 == 0) {
+			cptBG= (cptBG+1)%bg.size();
+			cptBGint = 0;
+		}
+		
+		g.drawImage(planet1, (int)(plx1*20), (int)(ply1*20), null);
+		g.drawImage(planet2, (int)(plx2*20), (int)(ply2*20), null);
 		
   		g.setColor(Color.red);
   		for(Player p : playerMap.values())
@@ -75,12 +96,18 @@ public class Panneau extends JPanel {
   			//g.fillOval((int)getPosX(), (int)getPosY(), 50, 50);
   			
   			//g.drawLine((int)getPosX()+25, (int)getPosY()+25, (int)(getPosX()+40*Math.cos(p.dir))+25, (int)(getPosY()+40*Math.sin(p.dir))+25);
-  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
-  			g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
+  			
   			
   			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 40, 40);
   			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
   			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 40,(int)p.y - 40,null);
+  			if(playerMap.containsKey(p.name)) {
+  				Player pl = playerMap.get(p.name);
+  				g.drawString(Integer.toString(pl.score) , (int)p.x ,(int)p.y - 70);
+  			}
+  			
+  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
+  			//g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
   			
   		}
   		if(obj != null) {
@@ -121,10 +148,19 @@ public class Panneau extends JPanel {
 		}
 		
 	}
-	public void updateScore(String namesc, int score) {
+	public void updateScore(String namesc, int score, double vx, double vy) {
 		if (playerMap.containsKey(namesc)){
 			playerMap.get(namesc).score = score;
+			playerMap.get(namesc).vx = vx;
+			playerMap.get(namesc).vy = vy;
 		}
+	}
+	public void stepPlayers() {
+		for(Player pl : playerMap.values())
+  		{
+			pl.x = ((pl.x + pl.vx)+1000)%1000;
+			pl.y = ((pl.y + pl.vy)+1000)%1000;
+  		}
 	}
 	public int getScore() {
 		return p.score;
