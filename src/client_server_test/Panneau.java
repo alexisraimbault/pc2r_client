@@ -35,9 +35,9 @@ public class Panneau extends JPanel {
 	public Panneau() {
 		try {
 			bg = new ArrayList<Image>();
+			cptBG = 0;
+			cptBGint = 0;
 			for(int i=0; i<72; i++) {
-				cptBG = 0;
-				cptBGint = 0;
 				if(i<10)
 					bg.add(ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH ));
 				else
@@ -45,7 +45,7 @@ public class Panneau extends JPanel {
 			}
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
-			space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
+			//space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(90, 90, Image.SCALE_SMOOTH );
 			BufferedImage tmpVaisseau = ImageIO.read(new File("vaisseau.png"));
