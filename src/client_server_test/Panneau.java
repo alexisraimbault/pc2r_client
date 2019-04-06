@@ -34,14 +34,20 @@ public class Panneau extends JPanel {
 	protected int cptBGint;
 	public Panneau() {
 		try {
+			Image tmp;
 			bg = new ArrayList<Image>();
 			cptBG = 0;
 			cptBGint = 0;
 			for(int i=0; i<72; i++) {
 				if(i<10)
-					bg.add(ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH ));
+					tmp = ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 				else
-					bg.add(ImageIO.read(new File("background_000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH ));
+					tmp = ImageIO.read(new File("background_000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
+				while(tmp.getWidth(null)==-1) {
+				
+				}
+				bg.add(tmp);
+				System.out.println("IMAGE "+(i+1)+"/72 LOADED.");
 			}
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );

@@ -54,7 +54,7 @@ public class ThreadListen extends Thread{
 				{
 					st = new String(temp1);
 					st2=st.split("/");      
-					//System.out.println("RECEIVING : "+st);
+					System.out.println("RECEIVING : "+st);
 					if(st2[0].contains("OBJECTIVE")) {
 						canalLecture.readFully(temp1, 0, 24);
 						st = new String(temp1);
@@ -237,7 +237,7 @@ public class ThreadListen extends Thread{
 				        }
 				        
 			        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
-				        //System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
+				        System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
 
 					}
 					

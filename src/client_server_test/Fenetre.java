@@ -3,11 +3,12 @@ package client_server_test;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Clou";
+	public String name = "Al";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -16,10 +17,10 @@ public class Fenetre extends JFrame {
 		new Fenetre(args[0]);
 	}
 
-  private Panneau pan = new Panneau();
+  private Panneau pan;;
 
   public Fenetre(String host) {
-	  
+	pan = new Panneau();
     this.setTitle("Animation");
     this.setSize(1000, 1000);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +54,7 @@ public class Fenetre extends JFrame {
         }
     });
     ThreadListen tl = new ThreadListen(pan, host, name);
-	tl.setPriority(10);
+	//tl.setPriority(10);
 	tl.start();
     go();
   }
