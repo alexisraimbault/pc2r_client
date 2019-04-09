@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -38,7 +39,7 @@ public class Panneau extends JPanel {
 			bg = new ArrayList<Image>();
 			cptBG = 0;
 			cptBGint = 0;
-			for(int i=0; i<72; i++) {
+			for(int i=0; i<1; i++) {
 				if(i<10)
 					tmp = ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 				else
@@ -49,17 +50,17 @@ public class Panneau extends JPanel {
 				bg.add(tmp);
 				System.out.println("IMAGE "+(i+1)+"/72 LOADED.");
 			}
-			chest = ImageIO.read(new File("chest.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
-			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH );
+			chest = ImageIO.read(new File("chest.png")).getScaledInstance(100, 122, Image.SCALE_SMOOTH );
+			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			//space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
-			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(90, 90, Image.SCALE_SMOOTH );
+			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(160, 160, Image.SCALE_SMOOTH );
 			BufferedImage tmpVaisseau = ImageIO.read(new File("vaisseau.png"));
 			int w = tmpVaisseau.getWidth();
 			int h = tmpVaisseau.getHeight();
 			
-			double scaleX = (double)w/80.0;
-			double scaleY = (double)h/80.0;
+			double scaleX = (double)w/140;
+			double scaleY = (double)h/140;
 			System.out.println(scaleX +"-"+ scaleY);
 			vaisseau = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 			AffineTransform at = new AffineTransform();
@@ -84,13 +85,13 @@ public class Panneau extends JPanel {
 		}
 		
 		g.drawImage(planet1, (int)(plx1*20), (int)(ply1*20), null);
-		g.drawImage(planet2, (int)(plx2*20), (int)(ply2*20), null);
+		g.drawImage(planet2, (int)(plx2*20)-80, (int)(ply2*20)-80, null);
 		
   		g.setColor(Color.red);
   		for(Player p : playerMap.values())
   		{
-  			if(p.name != this.name) {
-  				g.drawImage(ennemy, (int)p.x - 10, (int)p.y - 10, null);
+  			if(!Objects.equals(p.name ,this.name)) {
+  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
   				//g.fillOval((int)p.x,(int) p.y, 30, 30);
   			}
   				
@@ -104,9 +105,9 @@ public class Panneau extends JPanel {
   			//g.drawLine((int)getPosX()+25, (int)getPosY()+25, (int)(getPosX()+40*Math.cos(p.dir))+25, (int)(getPosY()+40*Math.sin(p.dir))+25);
   			
   			
-  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 40, 40);
+  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 70, 70);
   			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 40,(int)p.y - 40,null);
+  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 70,(int)p.y - 70,null);
   			if(playerMap.containsKey(p.name)) {
   				Player pl = playerMap.get(p.name);
   				g.drawString(Integer.toString(pl.score) , (int)p.x ,(int)p.y - 70);
@@ -118,7 +119,7 @@ public class Panneau extends JPanel {
   		}
   		if(obj != null) {
   			g.setColor(Color.gray);
-  			g.drawImage(chest, (int)obj.getX() - 10, (int)obj.getY() - 10, null);
+  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
   			//g.fillOval((int)obj.getX(), (int)obj.getY(), 20, 20);
   		}
 	}
@@ -162,10 +163,25 @@ public class Panneau extends JPanel {
 		}
 	}
 	public void stepPlayers() {
+		double d, tmpx, tmpy;
 		for(Player pl : playerMap.values())
   		{
-			pl.x = ((pl.x + pl.vx)+1000)%1000;
-			pl.y = ((pl.y + pl.vy)+1000)%1000;
+			if(!Objects.equals(pl.name, p.name)) {
+				pl.x = ((pl.x + pl.vx)+1000)%1000;
+				pl.y = ((pl.y + pl.vy)+1000)%1000;
+				/*for(Player pl1 : playerMap.values())
+		  		{
+					d = Math.sqrt((pl.x - pl1.x)*(pl.x - pl1.x) + (pl.y - pl1.y)*(pl.y - pl1.y));
+			    	  if(d<100) {
+			    		  tmpx=pl1.vx;
+			    		  tmpy=pl1.vx;
+			    		  pl1.vx = pl.vx;
+			    		  pl1.vy = pl.vy;
+			    		  pl.vx = tmpx;
+			    		  pl.vy = tmpy;
+			    	  }
+		  		}*/
+			}
   		}
 	}
 	public int getScore() {

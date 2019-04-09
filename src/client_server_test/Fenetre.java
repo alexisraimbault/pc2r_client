@@ -1,14 +1,13 @@
 package client_server_test;
 
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Al";
+	public String name = "Alex";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -17,7 +16,7 @@ public class Fenetre extends JFrame {
 		new Fenetre(args[0]);
 	}
 
-  private Panneau pan;;
+  private Panneau pan;
 
   public Fenetre(String host) {
 	pan = new Panneau();
@@ -61,7 +60,7 @@ public class Fenetre extends JFrame {
   
 
   private void go() {
-	double d1,d2;
+	double d1,d2,d, tmpx, tmpy;
 	double force, angle;
 	
     while (true) {
@@ -71,7 +70,7 @@ public class Fenetre extends JFrame {
 	      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
 	      d1 = Math.sqrt((pan.plx1*20 - pan.getPlayer().x)*(pan.plx1*20 - pan.getPlayer().x) + (pan.ply1*20 - pan.getPlayer().y)*(pan.ply1*20 - pan.getPlayer().y));
 	      d2 = Math.sqrt((pan.plx2*20 - pan.getPlayer().x)*(pan.plx2*20 - pan.getPlayer().x) + (pan.ply2*20 - pan.getPlayer().y)*(pan.ply2*20 - pan.getPlayer().y));
-	      if(d1 < 300) {
+	      if(d1 < 250) {
 	    	force = 150/(d1*d1);
 	    	angle = Math.atan2(Math.abs(pan.plx1*20-pan.getPlayer().x), Math.abs(pan.ply1*20-pan.getPlayer().y));
 	    	 
@@ -79,12 +78,42 @@ public class Fenetre extends JFrame {
 	    	pan.getPlayer().vy += force * Math.sin(angle);
 	    	  
 	      }
-	      if(d2 < 300) {
+	      if(d2 < 250) {
 	    	force = 300/(d2*d2);
 	    	angle = Math.atan2(Math.abs(pan.plx2*20-pan.getPlayer().x), Math.abs(pan.ply2*20-pan.getPlayer().y));
 	    	 
 	    	pan.getPlayer().vx += force * Math.cos(angle); 
 	    	pan.getPlayer().vy += force * Math.sin(angle);
+	      }
+	      for(Player pl : pan.playerMap.values()) {
+	    	  if(!Objects.equals(pl.name,pan.getPlayer().name)) {
+		    	  d = Math.sqrt((pl.x - pan.getPlayer().x)*(pl.x - pan.getPlayer().x) + (pl.y - pan.getPlayer().y)*(pl.y - pan.getPlayer().y));
+		    	  if(d<25 /*&& (Math.sqrt((pl.x - ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000)*(pl.x - ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000) + (pl.y - ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000)*(pl.y -((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000)))<d*/) {
+		    		  /*double v1 =  Math.sqrt(pan.getPlayer().vx* pan.getPlayer().vx + (pan.getPlayer().vy* pan.getPlayer().vy));
+		    		  double v2 = Math.sqrt(pl.vx* pl.vx + (pl.vy* pl.vy));
+		    		  if(v1 >= v2) {
+		    			  pl.vx += pan.getPlayer().vx;
+		    			  pl.vy += pan.getPlayer().vy;
+		    			  pan.getPlayer().vx = 0;
+		    			  pan.getPlayer().vy = 0;
+		    		  }
+		    		  else {
+		    			  pan.getPlayer().vx += pl.vx;
+		    			  pan.getPlayer().vy += pl.vy;
+		    			  pl.vx = 0;
+		    			  pl.vy = 0;
+		    		  }*/
+		    		  /*tmpx=pan.getPlayer().vx;
+		    		  tmpy=pan.getPlayer().vy;
+		    		  pan.getPlayer().vx = pl.vx;
+		    		  pan.getPlayer().vy = pl.vy;
+		    		  pl.vx = tmpx;
+		    		  pl.vy = tmpy;*/
+		    		  //System.out.println("collision");
+		    		  //pan.getPlayer().vx = -pan.getPlayer().vx;
+		    		  //pan.getPlayer().vy = -pan.getPlayer().vy;
+		    	  }
+	    	  }
 	      }
 	      pan.repaint();
     	}
