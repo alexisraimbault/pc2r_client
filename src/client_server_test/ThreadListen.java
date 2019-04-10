@@ -279,6 +279,10 @@ public class ThreadListen extends Thread{
 				        }
 				        welcome = true;
 					}
+					if(st2[0].contains("ERR")) {
+						System.out.println("USERNAME ALREADY TAKEN");
+					}
+					
 					if(st2[0].contains("UPDATE")) {
 						Pattern regex = Pattern.compile("\\D*(\\d*)"); 
 				        Matcher matcher = regex.matcher(st2[1]);
@@ -292,6 +296,17 @@ public class ThreadListen extends Thread{
 			        	canalEcriture.print(pan.getPosX()/20.0+"/"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
 				        //System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
 
+					}
+					if(st2[0].contains("WIN")) {
+						cpt = 0;
+						pl = st2[1].toCharArray();
+						name = "";
+						while((cpt < pl.length) &&(pl[cpt]!='/'))
+						{
+							name+=pl[cpt];
+							cpt++;
+						}
+						System.out.println("WINNER WINNER : " + name);
 					}
 					
 					
