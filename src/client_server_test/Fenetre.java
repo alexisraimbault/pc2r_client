@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Alex";
+	public String name = "Clou";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");

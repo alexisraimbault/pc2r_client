@@ -204,7 +204,7 @@ public class ThreadListen extends Thread{
 										}
 										y=Double.parseDouble(tmpy);
 										
-										newPlayer = new Player(name,x*20,y*20,0,0,2,0);
+										newPlayer = new Player(name,x*20,y*20,0,0,0,0);
 										if(welcome) {
 											if(Objects.equals(name, this.nameP)) {
 												pan.setPlayer(newPlayer);
@@ -269,6 +269,12 @@ public class ThreadListen extends Thread{
 					}
 					    
 					if(st2[0].contains("WELCOME")) {
+						if(st2[1].contains("attente")) {
+							pan.setAttente(true);
+						}
+						else {
+							pan.setAttente(false);
+						}
 						Pattern regex = Pattern.compile("\\D*(\\d*)");
 				        Matcher matcher = regex.matcher(st2[2]);
 				        if (matcher.matches() && matcher.groupCount() == 1) {
@@ -307,8 +313,15 @@ public class ThreadListen extends Thread{
 							cpt++;
 						}
 						System.out.println("WINNER WINNER : " + name);
+						pan.getPlayer().score = 0;
+						pan.getPlayer().vx = 0;
+						pan.getPlayer().vy = 0;
+						pan.setAttente(true);
 					}
-					
+					if(st2[0].contains("START")) {
+						//System.out.println("STARTING");
+						pan.setAttente(false);
+					}
 					
 				}
 			  

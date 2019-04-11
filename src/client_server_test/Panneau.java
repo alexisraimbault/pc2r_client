@@ -33,6 +33,7 @@ public class Panneau extends JPanel {
 	protected final double thrustit = 0.5;
 	protected int cptBG;
 	protected int cptBGint;
+	protected boolean attente = true;
 	public Panneau() {
 		try {
 			Image tmp;
@@ -74,54 +75,61 @@ public class Panneau extends JPanel {
 		}
 	}
 	public void paintComponent(Graphics g) {
-		
-		/*g.setColor(Color.black);//couleur de fond
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());*/
-		g.drawImage(bg.get(cptBG), 0, 0, null);
-		cptBGint++;
-		if(cptBGint%2 == 0) {
-			cptBG= (cptBG+1)%bg.size();
-			cptBGint = 0;
+		if(!attente) {
+			/*g.setColor(Color.black);//couleur de fond
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());*/
+			g.drawImage(bg.get(cptBG), 0, 0, null);
+			cptBGint++;
+			if(cptBGint%2 == 0) {
+				cptBG= (cptBG+1)%bg.size();
+				cptBGint = 0;
+			}
+			
+			g.drawImage(planet1, (int)(plx1*20), (int)(ply1*20), null);
+			g.drawImage(planet2, (int)(plx2*20)-80, (int)(ply2*20)-80, null);
+			
+	  		g.setColor(Color.red);
+	  		for(Player p : playerMap.values())
+	  		{
+	  			if(!Objects.equals(p.name ,this.name)) {
+	  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
+	  				//g.fillOval((int)p.x,(int) p.y, 30, 30);
+	  			}
+	  				
+	  			
+	  			/*g.drawString(p.name, (int)p.x ,(int)p.y + 50);
+	  			g.drawString(Integer.toString(p.score), (int)p.x ,(int)p.y - 30);*/
+	  		}
+	  		if(p!=null) {
+	  			//g.fillOval((int)getPosX(), (int)getPosY(), 50, 50);
+	  			
+	  			//g.drawLine((int)getPosX()+25, (int)getPosY()+25, (int)(getPosX()+40*Math.cos(p.dir))+25, (int)(getPosY()+40*Math.sin(p.dir))+25);
+	  			
+	  			
+	  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 70, 70);
+	  			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+	  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 70,(int)p.y - 70,null);
+	  			if(playerMap.containsKey(p.name)) {
+	  				Player pl = playerMap.get(p.name);
+	  				g.drawString(Integer.toString(pl.score) , (int)p.x ,(int)p.y - 70);
+	  			}
+	  			
+	  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
+	  			//g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
+	  			
+	  		}
+	  		if(obj != null) {
+	  			g.setColor(Color.gray);
+	  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
+	  			//g.fillOval((int)obj.getX(), (int)obj.getY(), 20, 20);
+	  		}
 		}
-		
-		g.drawImage(planet1, (int)(plx1*20), (int)(ply1*20), null);
-		g.drawImage(planet2, (int)(plx2*20)-80, (int)(ply2*20)-80, null);
-		
-  		g.setColor(Color.red);
-  		for(Player p : playerMap.values())
-  		{
-  			if(!Objects.equals(p.name ,this.name)) {
-  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
-  				//g.fillOval((int)p.x,(int) p.y, 30, 30);
-  			}
-  				
-  			
-  			/*g.drawString(p.name, (int)p.x ,(int)p.y + 50);
-  			g.drawString(Integer.toString(p.score), (int)p.x ,(int)p.y - 30);*/
-  		}
-  		if(p!=null) {
-  			//g.fillOval((int)getPosX(), (int)getPosY(), 50, 50);
-  			
-  			//g.drawLine((int)getPosX()+25, (int)getPosY()+25, (int)(getPosX()+40*Math.cos(p.dir))+25, (int)(getPosY()+40*Math.sin(p.dir))+25);
-  			
-  			
-  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 70, 70);
-  			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 70,(int)p.y - 70,null);
-  			if(playerMap.containsKey(p.name)) {
-  				Player pl = playerMap.get(p.name);
-  				g.drawString(Integer.toString(pl.score) , (int)p.x ,(int)p.y - 70);
-  			}
-  			
-  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
-  			//g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
-  			
-  		}
-  		if(obj != null) {
-  			g.setColor(Color.gray);
-  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
-  			//g.fillOval((int)obj.getX(), (int)obj.getY(), 20, 20);
-  		}
+		else {
+			g.setColor(Color.black);//couleur de fond
+			g.fillRect(0, 0, this.getWidth(), this.getHeight());
+			g.setColor(Color.white);
+			g.drawString("ATTENTE ...", 200 ,200);
+		}
 	}
 	public void thrust()
 	{
@@ -183,6 +191,9 @@ public class Panneau extends JPanel {
 		  		}*/
 			}
   		}
+	}
+	public void setAttente( boolean b) {
+		attente = b;
 	}
 	public int getScore() {
 		return p.score;
