@@ -23,12 +23,19 @@ public class Panneau extends JPanel {
 	private Image chest;
 	private Image ennemy;
 	private Image space;
+	private Image portal;
 	private List<Image> bg;
 	private Image planet1;
 	public double plx1,plx2,ply1,ply2;
+	public int crashed1, crashed2;
 	private Image planet2;
 	protected Objective obj;
 	protected String winner;
+	public boolean justUnstuck1 = false;
+	public boolean justUnstuck2 = false;
+	public boolean isTeleporter = false;
+	public boolean justTeleported = false;
+	public double teleportx1,teleportx2,teleporty1,teleporty2;
 	public Player p = null;
 	protected final double turnit = 0.3;
 	protected final double thrustit = 0.5;
@@ -55,6 +62,7 @@ public class Panneau extends JPanel {
 			}
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(100, 122, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			portal = ImageIO.read(new File("portal.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			//space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(160, 160, Image.SCALE_SMOOTH );
@@ -86,16 +94,17 @@ public class Panneau extends JPanel {
 				cptBG= (cptBG+1)%bg.size();
 				cptBGint = 0;
 			}
-			
-			g.drawImage(planet1, (int)(plx1*20), (int)(ply1*20), null);
+			g.setColor(Color.red);
+			g.drawImage(planet1, (int)(plx1*20)-30, (int)(ply1*20)-30, null);
+			g.drawLine((int)(plx1*20) - 10, (int)(ply1*20) - 10, (int)(plx1*20) + 10, (int)(ply1*20) + 10);
 			g.drawImage(planet2, (int)(plx2*20)-80, (int)(ply2*20)-80, null);
-			
+			g.drawLine( (int)(plx2*20) -10, (int)(ply2*20) - 10,(int)(plx2*20) + 10, (int)(ply2*20) + 10);
 	  		g.setColor(Color.red);
 	  		for(Player p : playerMap.values())
 	  		{
 	  			if(!Objects.equals(p.name ,this.name)) {
 	  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
-	  				//g.fillOval((int)p.x,(int) p.y, 30, 30);
+	  				g.drawLine((int)p.x,(int) p.y, (int)p.x,(int) p.y);
 	  			}
 	  				
 	  			
@@ -105,7 +114,7 @@ public class Panneau extends JPanel {
 	  		if(p!=null) {
 	  			//g.fillOval((int)getPosX(), (int)getPosY(), 50, 50);
 	  			
-	  			//g.drawLine((int)getPosX()+25, (int)getPosY()+25, (int)(getPosX()+40*Math.cos(p.dir))+25, (int)(getPosY()+40*Math.sin(p.dir))+25);
+	  			
 	  			
 	  			
 	  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 70, 70);
@@ -117,13 +126,18 @@ public class Panneau extends JPanel {
 	  			}
 	  			
 	  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
+	  			g.drawLine((int)getPosX()-10, (int)getPosY()-10, (int)getPosX()+10, (int)getPosY()+10);
 	  			//g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
 	  			
 	  		}
+	  		
 	  		if(obj != null) {
-	  			g.setColor(Color.gray);
 	  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
-	  			//g.fillOval((int)obj.getX(), (int)obj.getY(), 20, 20);
+	  			g.drawLine((int)obj.getX() -10, (int)obj.getY() -10, (int)obj.getX() +10, (int)obj.getY()+10);
+	  		}
+	  		if(isTeleporter) {
+	  			g.drawImage(portal, (int)(teleportx1*20)-30, (int)(teleporty1*20)-30, null);
+	  			g.drawImage(portal, (int)(teleportx2*20)-30, (int)(teleporty2*20)-30, null);
 	  		}
 	  		if(scoreboard) {
 	  			g.setColor(new Color((float)0.8,(float)0.8,(float)0.8,(float)0.5));

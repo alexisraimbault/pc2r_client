@@ -303,6 +303,58 @@ public class ThreadListen extends Thread{
 				        //System.out.println("SENDING : UPDATE/x"+pan.getPosX()/20.0+"y"+pan.getPosY()/20.0+"/"+pan.getScore()+"/"+pan.getPlayer().vx+"/"+pan.getPlayer().vy+"/");
 
 					}
+					if(st2[0].contains("TEL")) {
+						if(st2[1].contains("N")) {
+							pan.isTeleporter = false;
+						}
+						else {
+							canalLecture.readFully(temp1, 0, 24);
+							st = new String(temp1);
+							pl = st.toCharArray();
+							cpt = 0;
+							tmpx = "";
+							tmpy = "";
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpx+=pl[cpt];
+								cpt++;
+							}
+							x=Double.parseDouble(tmpx);
+							pan.teleportx1 = x;
+							cpt++;
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpy+=pl[cpt];
+								cpt++;
+							}
+							y=Double.parseDouble(tmpy);
+							pan.teleporty1 = y;
+							//System.out.println("teleporter 1 : " + pan.teleportx1 + " / " + pan.teleporty1);
+							
+							canalLecture.readFully(temp1, 0, 24);
+							st = new String(temp1);
+							pl = st.toCharArray();
+							cpt = 0;
+							tmpx = "";
+							tmpy = "";
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpx+=pl[cpt];
+								cpt++;
+							}
+							x=Double.parseDouble(tmpx);
+							pan.teleportx2 = x;
+							cpt++;
+							while((cpt < pl.length) &&(pl[cpt]!='/'))
+							{
+								tmpy+=pl[cpt];
+								cpt++;
+							}
+							y=Double.parseDouble(tmpy);
+							pan.teleporty2 = y;
+							pan.isTeleporter = true;
+						}
+					}
 					if(st2[0].contains("WIN")) {
 						cpt = 0;
 						pl = st2[1].toCharArray();

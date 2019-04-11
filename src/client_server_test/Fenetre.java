@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "clou";
+	public String name = "Alex";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -66,31 +66,108 @@ public class Fenetre extends JFrame {
   
 
   private void go() {
-	double d1,d2,d, tmpx, tmpy;
+	double d1,d2,d, tmpx, tmpy, dt1, dt2;
 	double force, angle;
 	
     while (true) {
     	pan.stepPlayers();
     	if(pan.getPlayer() != null) {
-	      pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
-	      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
-	      d1 = Math.sqrt((pan.plx1*20 - pan.getPlayer().x)*(pan.plx1*20 - pan.getPlayer().x) + (pan.ply1*20 - pan.getPlayer().y)*(pan.ply1*20 - pan.getPlayer().y));
-	      d2 = Math.sqrt((pan.plx2*20 - pan.getPlayer().x)*(pan.plx2*20 - pan.getPlayer().x) + (pan.ply2*20 - pan.getPlayer().y)*(pan.ply2*20 - pan.getPlayer().y));
-	      if(d1 < 250) {
-	    	force = 150/(d1*d1);
-	    	angle = Math.atan2(Math.abs(pan.plx1*20-pan.getPlayer().x), Math.abs(pan.ply1*20-pan.getPlayer().y));
-	    	 
-	    	pan.getPlayer().vx += force * Math.cos(angle); 
-	    	pan.getPlayer().vy += force * Math.sin(angle);
+    	  if( pan.crashed1 == 0 && pan.crashed2 == 0) {
+		      pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
+		      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
+		      if(pan.isTeleporter) {
+			      dt1 = Math.sqrt((pan.teleportx1*20 - pan.getPlayer().x)*(pan.teleportx1*20 - pan.getPlayer().x) + (pan.teleporty1*20 - pan.getPlayer().y)*(pan.teleporty1*20 - pan.getPlayer().y));
+			      dt2 = Math.sqrt((pan.teleportx2*20 - pan.getPlayer().x)*(pan.teleportx2*20 - pan.getPlayer().x) + (pan.teleporty2*20 - pan.getPlayer().y)*(pan.teleporty2*20 - pan.getPlayer().y));
+			      
+			      if(dt1>50 && dt2>50)
+			    	  pan.justTeleported = false;
+			      
+			      if(dt1<30) {
+			    	  if(!pan.justTeleported) {
+			    		  pan.justTeleported = true;
+				    	  pan.getPlayer().x = pan.teleportx2*20;
+				    	  pan.getPlayer().y = pan.teleporty2*20;
+			    	  }
+			      }
+			      
+			      if(dt2<30) {
+			    	  if(!pan.justTeleported) {
+			    		  pan.justTeleported = true;
+			    		  pan.getPlayer().x = pan.teleportx1*20;
+				    	  pan.getPlayer().y = pan.teleporty1*20;
+			    	  }
+			      }
+			      
+		      }
+		      
+		      d1 = Math.sqrt((pan.plx1*20 - pan.getPlayer().x)*(pan.plx1*20 - pan.getPlayer().x) + (pan.ply1*20 - pan.getPlayer().y)*(pan.ply1*20 - pan.getPlayer().y));
+		      d2 = Math.sqrt((pan.plx2*20 - pan.getPlayer().x)*(pan.plx2*20 - pan.getPlayer().x) + (pan.ply2*20 - pan.getPlayer().y)*(pan.ply2*20 - pan.getPlayer().y));
+		      if(d1<30) {
+		    	  if(!pan.justUnstuck2) {
+			    	  pan.crashed1 = 80;
+			    	  pan.getPlayer().vx = 0;
+			    	  pan.getPlayer().vy = 0;
+		    	  }
+		      }
+		      else {
+			      if(d1 < 250) {
+			    	force = 150/(d1*d1);
+			    	angle = Math.atan2(Math.abs(pan.plx1*20-pan.getPlayer().x), Math.abs(pan.ply1*20-pan.getPlayer().y));
+			    	 
+			    	pan.getPlayer().vx += force * Math.cos(angle); 
+			    	pan.getPlayer().vy += force * Math.sin(angle);
+			    	  
+			      }
+			      else {
+			    	  if(pan.justUnstuck2)
+			    		  pan.justUnstuck2 = false;
+			      }
+			  }
+		      if(d2<50 ) {
+		    	  if(!pan.justUnstuck1) {
+			    	  pan.crashed2 = 80;
+			    	  pan.getPlayer().vx = 0;
+			    	  pan.getPlayer().vy = 0;
+		    	  }
+		      }
+		      else {
+		    	  
+			      if(d2 < 250) {
+			    	force = 300/(d2*d2);
+			    	angle = Math.atan2(Math.abs(pan.plx2*20-pan.getPlayer().x), Math.abs(pan.ply2*20-pan.getPlayer().y));
+			    	 
+			    	pan.getPlayer().vx += force * Math.cos(angle); 
+			    	pan.getPlayer().vy += force * Math.sin(angle);
+			      }
+			      else {
+			    	  if(pan.justUnstuck1)
+			    		  pan.justUnstuck1 = false;
+			      }
+		      }
+    	  }
+	      if(pan.crashed1 > 0) {
+	    	  pan.getPlayer().x = pan.plx1*20;
+		      pan.getPlayer().y = pan.ply1*20;
+	    	  pan.crashed1--;
+	    	  if(pan.crashed1 == 0) {
+	    		  pan.justUnstuck2 = true;
+	    		  pan.getPlayer().vx = pan.getPlayer().vx + 3*Math.cos(pan.getPlayer().dir);
+	  		      pan.getPlayer().vy = pan.getPlayer().vy + 3*Math.sin(pan.getPlayer().dir);
+	    	  }
+	      }
+	      if(pan.crashed2 > 0) {
+	    	  
+	    	  pan.getPlayer().x = pan.plx2*20;
+		      pan.getPlayer().y = pan.ply2*20;
+	    	  pan.crashed2--;
+	    	  if(pan.crashed2 == 0){
+	    		  pan.justUnstuck1 = true;
+	    		  pan.getPlayer().vx = pan.getPlayer().vx + 3*Math.cos(pan.getPlayer().dir);
+	  		      pan.getPlayer().vy = pan.getPlayer().vy + 3*Math.sin(pan.getPlayer().dir);
+	    	  }
 	    	  
 	      }
-	      if(d2 < 250) {
-	    	force = 300/(d2*d2);
-	    	angle = Math.atan2(Math.abs(pan.plx2*20-pan.getPlayer().x), Math.abs(pan.ply2*20-pan.getPlayer().y));
-	    	 
-	    	pan.getPlayer().vx += force * Math.cos(angle); 
-	    	pan.getPlayer().vy += force * Math.sin(angle);
-	      }
+	      
 	      for(Player pl : pan.playerMap.values()) {
 	    	  if(!Objects.equals(pl.name,pan.getPlayer().name)) {
 		    	  d = Math.sqrt((pl.x - pan.getPlayer().x)*(pl.x - pan.getPlayer().x) + (pl.y - pan.getPlayer().y)*(pl.y - pan.getPlayer().y));
