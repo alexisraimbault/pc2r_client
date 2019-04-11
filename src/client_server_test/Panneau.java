@@ -29,10 +29,15 @@ public class Panneau extends JPanel {
 	public double plx1,plx2,ply1,ply2;
 	public int crashed1, crashed2;
 	private Image planet2;
+	private Image warning1;
+	private Image warning2;
+	private Image repairing;
+	private Image repared;
 	protected Objective obj;
 	protected String winner;
 	public boolean justUnstuck1 = false;
 	public boolean justUnstuck2 = false;
+	public boolean closeToCrash = false;
 	public boolean isTeleporter = false;
 	public boolean justTeleported = false;
 	public double teleportx1,teleportx2,teleporty1,teleporty2;
@@ -40,6 +45,7 @@ public class Panneau extends JPanel {
 	protected final double turnit = 0.3;
 	protected final double thrustit = 0.5;
 	protected int cptBG;
+	protected int cptWarning;
 	protected int cptBGint;
 	protected boolean attente = true;
 	protected boolean scoreboard = false;
@@ -49,6 +55,7 @@ public class Panneau extends JPanel {
 			bg = new ArrayList<Image>();
 			cptBG = 0;
 			cptBGint = 0;
+			cptWarning = 0;
 			for(int i=0; i<1; i++) {
 				if(i<10)
 					tmp = ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
@@ -63,6 +70,10 @@ public class Panneau extends JPanel {
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(100, 122, Image.SCALE_SMOOTH );
 			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			portal = ImageIO.read(new File("portal.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			warning1 = ImageIO.read(new File("warning_1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			warning2 = ImageIO.read(new File("warning_2.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			repairing = ImageIO.read(new File("repair.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			repared = ImageIO.read(new File("go.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			//space = ImageIO.read(new File("space.png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(160, 160, Image.SCALE_SMOOTH );
@@ -96,15 +107,12 @@ public class Panneau extends JPanel {
 			}
 			g.setColor(Color.red);
 			g.drawImage(planet1, (int)(plx1*20)-30, (int)(ply1*20)-30, null);
-			g.drawLine((int)(plx1*20) - 10, (int)(ply1*20) - 10, (int)(plx1*20) + 10, (int)(ply1*20) + 10);
 			g.drawImage(planet2, (int)(plx2*20)-80, (int)(ply2*20)-80, null);
-			g.drawLine( (int)(plx2*20) -10, (int)(ply2*20) - 10,(int)(plx2*20) + 10, (int)(ply2*20) + 10);
 	  		g.setColor(Color.red);
 	  		for(Player p : playerMap.values())
 	  		{
 	  			if(!Objects.equals(p.name ,this.name)) {
 	  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
-	  				g.drawLine((int)p.x,(int) p.y, (int)p.x,(int) p.y);
 	  			}
 	  				
 	  			
@@ -120,20 +128,35 @@ public class Panneau extends JPanel {
 	  			AffineTransform tx = AffineTransform.getRotateInstance(p.dir+90, 70, 70);
 	  			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 	  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 70,(int)p.y - 70,null);
-	  			if(playerMap.containsKey(p.name)) {
+	  			/*if(playerMap.containsKey(p.name)) {
 	  				Player pl = playerMap.get(p.name);
 	  				g.drawString(Integer.toString(pl.score) , (int)p.x ,(int)p.y - 70);
 	  			}
 	  			
-	  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);
-	  			g.drawLine((int)getPosX()-10, (int)getPosY()-10, (int)getPosX()+10, (int)getPosY()+10);
+	  			g.drawString(p.name, (int)p.x ,(int)p.y + 80);*/
 	  			//g.drawString(Integer.toString(p.score) , (int)p.x ,(int)p.y - 70);
 	  			
+	  		}
+	  		if(closeToCrash) {
+	  			if(cptWarning<10)
+	  				g.drawImage(warning2,(int)p.x + 70,(int)p.y - 90,null);
+	  			else
+	  				g.drawImage(warning1,(int)p.x + 70,(int)p.y - 90,null);
+	  			cptWarning++;
+	  			if(cptWarning >= 20) {
+	  				cptWarning = 0;
+	  			}
+	  		}
+	  		if(crashed1>0 || crashed2>0) {
+	  			g.drawImage(repairing,(int)p.x + 70,(int)p.y - 90,null);
+	  		}
+	  		if(justUnstuck1 || justUnstuck2) {
+	  			g.drawImage(repared,(int)p.x + 70,(int)p.y - 90,null);
 	  		}
 	  		
 	  		if(obj != null) {
 	  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
-	  			g.drawLine((int)obj.getX() -10, (int)obj.getY() -10, (int)obj.getX() +10, (int)obj.getY()+10);
+	  			
 	  		}
 	  		if(isTeleporter) {
 	  			g.drawImage(portal, (int)(teleportx1*20)-30, (int)(teleporty1*20)-30, null);
@@ -148,7 +171,7 @@ public class Panneau extends JPanel {
 	  			int cpt = 1;
 	  			for(Player p : playerMap.values())
 		  		{
-		  			g.drawString(p.name + "\t" + Integer.toString(p.score), 100 ,50*cpt);
+		  			g.drawString(p.name, 100 ,50*cpt);
 		  			g.drawString(Integer.toString(p.score), 300 ,50*cpt);
 	  				cpt++;
 		  		}

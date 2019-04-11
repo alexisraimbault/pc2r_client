@@ -66,7 +66,7 @@ public class Fenetre extends JFrame {
   
 
   private void go() {
-	double d1,d2,d, tmpx, tmpy, dt1, dt2;
+	double d1,d2,d, dt1, dt2;
 	double force, angle;
 	
     while (true) {
@@ -102,6 +102,11 @@ public class Fenetre extends JFrame {
 		      
 		      d1 = Math.sqrt((pan.plx1*20 - pan.getPlayer().x)*(pan.plx1*20 - pan.getPlayer().x) + (pan.ply1*20 - pan.getPlayer().y)*(pan.ply1*20 - pan.getPlayer().y));
 		      d2 = Math.sqrt((pan.plx2*20 - pan.getPlayer().x)*(pan.plx2*20 - pan.getPlayer().x) + (pan.ply2*20 - pan.getPlayer().y)*(pan.ply2*20 - pan.getPlayer().y));
+		      if(d1<90 || d2<110)
+		    	  pan.closeToCrash = true;
+		      else
+		    	  pan.closeToCrash = false;
+		      
 		      if(d1<30) {
 		    	  if(!pan.justUnstuck2) {
 			    	  pan.crashed1 = 80;
