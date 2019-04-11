@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Clou";
+	public String name = "clou";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -45,11 +45,17 @@ public class Fenetre extends JFrame {
             if(ke.getKeyCode() == 39) {
             	pan.anticlock();
             }
+            if(ke.getKeyCode() == 83) {
+            	pan.setScores(true);
+            }
         } 
 
         @Override
         public void keyReleased(KeyEvent ke) {
             //System.out.println("released"+ke.getKeyCode());
+            if(ke.getKeyCode() == 83) {
+            	pan.setScores(false);
+            }
         }
     });
     ThreadListen tl = new ThreadListen(pan, host, name);

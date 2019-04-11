@@ -28,12 +28,14 @@ public class Panneau extends JPanel {
 	public double plx1,plx2,ply1,ply2;
 	private Image planet2;
 	protected Objective obj;
+	protected String winner;
 	public Player p = null;
 	protected final double turnit = 0.3;
 	protected final double thrustit = 0.5;
 	protected int cptBG;
 	protected int cptBGint;
 	protected boolean attente = true;
+	protected boolean scoreboard = false;
 	public Panneau() {
 		try {
 			Image tmp;
@@ -123,12 +125,30 @@ public class Panneau extends JPanel {
 	  			g.drawImage(chest, (int)obj.getX() - 50, (int)obj.getY() - 61, null);
 	  			//g.fillOval((int)obj.getX(), (int)obj.getY(), 20, 20);
 	  		}
+	  		if(scoreboard) {
+	  			g.setColor(new Color((float)0.8,(float)0.8,(float)0.8,(float)0.5));
+	  			
+	  			g.fillRect(20, 20, 400, 50*(playerMap.size()) + 20);
+	  			
+	  			g.setColor(Color.black);
+	  			int cpt = 1;
+	  			for(Player p : playerMap.values())
+		  		{
+		  			g.drawString(p.name + "\t" + Integer.toString(p.score), 100 ,50*cpt);
+		  			g.drawString(Integer.toString(p.score), 300 ,50*cpt);
+	  				cpt++;
+		  		}
+	  		}
 		}
 		else {
 			g.setColor(Color.black);//couleur de fond
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 			g.setColor(Color.white);
 			g.drawString("ATTENTE ...", 200 ,200);
+			if(winner != null) {
+				g.drawString("WINNER : " + winner, 200 ,400);
+				
+			}
 		}
 	}
 	public void thrust()
@@ -192,8 +212,14 @@ public class Panneau extends JPanel {
 			}
   		}
 	}
+	public void setWinner(String w) {
+		winner = w;
+	}
 	public void setAttente( boolean b) {
 		attente = b;
+	}
+	public void setScores( boolean b) {
+		scoreboard = b;
 	}
 	public int getScore() {
 		return p.score;

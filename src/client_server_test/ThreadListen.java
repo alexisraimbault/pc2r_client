@@ -312,7 +312,11 @@ public class ThreadListen extends Thread{
 							name+=pl[cpt];
 							cpt++;
 						}
+						
+						
+						
 						System.out.println("WINNER WINNER : " + name);
+						pan.setWinner(name);
 						pan.getPlayer().score = 0;
 						pan.getPlayer().vx = 0;
 						pan.getPlayer().vy = 0;
