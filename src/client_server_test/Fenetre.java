@@ -9,16 +9,16 @@ import javax.swing.JFrame;
 public class Fenetre extends JFrame {
 	public String name = "clou2";
 	public static void main(String[] args) {
-		if (args.length != 1) {
-			System.err.println("Usage: java Client <hote>");
+		if (args.length != 2) {
+			System.err.println("Usage: java Client <hote> <port>");
 			System.exit(1); }
 		
-		new Fenetre(args[0]);
+		new Fenetre(args[0],  Integer.parseInt(args[1]));
 	}
 
   private Panneau pan;
 
-  public Fenetre(String host) {
+  public Fenetre(String host, int port) {
 	pan = new Panneau();
     this.setTitle("Animation");
     this.setSize(1000, 1000);
@@ -58,7 +58,7 @@ public class Fenetre extends JFrame {
             }
         }
     });
-    ThreadListen2 tl = new ThreadListen2(pan, host, name);
+    ThreadListen tl = new ThreadListen(pan, host, name, port);
 	//tl.setPriority(10);
 	tl.start();
     go();

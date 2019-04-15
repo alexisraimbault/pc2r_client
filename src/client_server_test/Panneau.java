@@ -48,16 +48,22 @@ public class Panneau extends JPanel {
 	protected int cptBG;
 	protected int cptWarning;
 	protected int cptBGint;
+	protected int cptPortal;
+	protected int cptPortalInt;
 	protected boolean attente = true;
 	protected boolean scoreboard = false;
+	protected List<Image> animPortal;
 	public Panneau() {
 		try {
 			Image tmp;
 			bg = new ArrayList<Image>();
+			animPortal = new ArrayList<Image>();
 			cptBG = 0;
 			cptBGint = 0;
+			cptPortalInt = 0;
+			cptPortal = 0;
 			cptWarning = 0;
-			for(int i=0; i<1; i++) {
+			for(int i=0; i<1; i++) {//replace 1 by 72 to get the full animation !
 				if(i<10)
 					tmp = ImageIO.read(new File("background_0000"+i+".png")).getScaledInstance(1000, 1000, Image.SCALE_SMOOTH );
 				else
@@ -68,22 +74,50 @@ public class Panneau extends JPanel {
 				bg.add(tmp);
 				System.out.println("IMAGE "+(i+1)+"/72 LOADED.");
 			}
+			for(int i=1; i<15; i++) {//replace 1 by 72 to get the full animation !
+				tmp = ImageIO.read(new File("portal"+i+".png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+				while(tmp.getWidth(null)==-1) {
+				
+				}
+				animPortal.add(tmp);
+			}
 			chest = ImageIO.read(new File("chest.png")).getScaledInstance(100, 122, Image.SCALE_SMOOTH );
-			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
+			ennemy = ImageIO.read(new File("ennemy.png")).getScaledInstance(80, 60, Image.SCALE_SMOOTH );
 			portal = ImageIO.read(new File("portal.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			warning1 = ImageIO.read(new File("warning_1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			warning2 = ImageIO.read(new File("warning_2.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			repairing = ImageIO.read(new File("repair.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
 			repared = ImageIO.read(new File("go.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
-			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(60, 60, Image.SCALE_SMOOTH );
-			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(160, 160, Image.SCALE_SMOOTH );
+			planet1 = ImageIO.read(new File("planet1.png")).getScaledInstance(120, 120, Image.SCALE_SMOOTH );
+			planet2 = ImageIO.read(new File("planet2.png")).getScaledInstance(200, 200, Image.SCALE_SMOOTH );
 			BufferedImage tmpVaisseau = ImageIO.read(new File("vaisseau.png"));
+			/*BufferedImage tmpPortal = ImageIO.read(new File("portal.png"));
+			int wPortal = tmpPortal.getWidth();
+			int hPortal = tmpPortal.getHeight();
+			
+			double scaleXPortal = (double)wPortal/60;
+			double scaleYPortal = (double)hPortal/60;
+			BufferedImage tmpPortalBuff = new BufferedImage(wPortal, wPortal, BufferedImage.TYPE_INT_ARGB);
+			AffineTransform atp = new AffineTransform();
+			atp.scale(1/scaleXPortal, 1/scaleYPortal);
+			AffineTransformOp scaleOpp = 
+			   new AffineTransformOp(atp, AffineTransformOp.TYPE_BILINEAR);
+			tmpPortalBuff = scaleOpp.filter(tmpPortal, tmpPortalBuff);
+			
+			AffineTransform txp;
+			AffineTransformOp opp;
+			for(int i = 0; i<360; i+=20) {
+				txp = AffineTransform.getRotateInstance(i, 30, 30);
+	  			opp = new AffineTransformOp(txp, AffineTransformOp.TYPE_BILINEAR);
+	  			animPortal.add(opp.filter(tmpPortalBuff ,null));
+			}
+			*/
+  			
 			int w = tmpVaisseau.getWidth();
 			int h = tmpVaisseau.getHeight();
 			
 			double scaleX = (double)w/140;
 			double scaleY = (double)h/140;
-			System.out.println(scaleX +"-"+ scaleY);
 			vaisseau = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 			AffineTransform at = new AffineTransform();
 			at.scale(1/scaleX, 1/scaleY);
@@ -104,13 +138,13 @@ public class Panneau extends JPanel {
 				cptBGint = 0;
 			}
 			g.setColor(Color.red);
-			g.drawImage(planet1, (int)(plx1)-30, (int)(ply1)-30, null);
-			g.drawImage(planet2, (int)(plx2)-80, (int)(ply2)-80, null);
+			g.drawImage(planet1, (int)(plx1)-60, (int)(ply1)-60, null);
+			g.drawImage(planet2, (int)(plx2)-100, (int)(ply2)-100, null);
 	  		g.setColor(Color.red);
 	  		for(Player p : playerMap.values())
 	  		{
 	  			if(!Objects.equals(p.name ,this.name)) {
-	  				g.drawImage(ennemy, (int)p.x - 30, (int)p.y - 30, null);
+	  				g.drawImage(ennemy, (int)p.x - 40, (int)p.y - 30, null);
 	  			}
 	  		}
 	  		if(p!=null) {
@@ -120,7 +154,7 @@ public class Panneau extends JPanel {
 	  			g.drawImage(op.filter(vaisseau ,null),(int)p.x - 70,(int)p.y - 70,null);
 	  			
 	  		}
-	  		if(!justUnstuck && (Math.sqrt((plx1 - p.x)*(plx1 - p.x) + (ply1 - p.y)*(ply1 - p.y))<90 || Math.sqrt((plx2 - p.x)*(plx2 - p.x) + (ply2 - p.y)*(ply2 - p.y))<90)) {
+	  		if(!justUnstuck && (Math.sqrt((plx1 - p.x)*(plx1 - p.x) + (ply1 - p.y)*(ply1 - p.y))<120 || Math.sqrt((plx2 - p.x)*(plx2 - p.x) + (ply2 - p.y)*(ply2 - p.y))<120)) {
 	  			if(cptWarning<10)
 	  				g.drawImage(warning2,(int)p.x + 70,(int)p.y - 90,null);
 	  			else
@@ -145,8 +179,13 @@ public class Panneau extends JPanel {
 	  			
 	  		}
 	  		if(isTeleporter) {
-	  			g.drawImage(portal, (int)(teleportx1)-30, (int)(teleporty1)-30, null);
-	  			g.drawImage(portal, (int)(teleportx2)-30, (int)(teleporty2)-30, null);
+	  			g.drawImage(animPortal.get(cptPortal), (int)(teleportx1)-30, (int)(teleporty1)-30, null);
+	  			g.drawImage(animPortal.get((cptPortal + 3)%animPortal.size()), (int)(teleportx2)-30, (int)(teleporty2)-30, null);
+	  			cptPortalInt++;
+	  			if(cptPortalInt%2 ==0){
+	  				cptPortal = (cptPortal +1)%animPortal.size();
+	  				cptPortalInt = 0;
+	  			}
 	  		}
 	  		if(scoreboard) {
 	  			g.setColor(new Color((float)0.8,(float)0.8,(float)0.8,(float)0.5));
