@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.swing.JFrame;
 
 public class Fenetre extends JFrame {
-	public String name = "Alex";
+	public String name = "clou2";
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: java Client <hote>");
@@ -58,7 +58,7 @@ public class Fenetre extends JFrame {
             }
         }
     });
-    ThreadListen tl = new ThreadListen(pan, host, name);
+    ThreadListen2 tl = new ThreadListen2(pan, host, name);
 	//tl.setPriority(10);
 	tl.start();
     go();
@@ -72,7 +72,9 @@ public class Fenetre extends JFrame {
     while (true) {
     	pan.stepPlayers();
     	if(pan.getPlayer() != null) {
-    	  if( pan.crashed1 == 0 && pan.crashed2 == 0) {
+    		/*pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
+		    pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
+    	  /*if( pan.crashed1 == 0 && pan.crashed2 == 0) {
 		      pan.getPlayer().x = ((pan.getPlayer().x + pan.getPlayer().vx)+1000)%1000;
 		      pan.getPlayer().y = ((pan.getPlayer().y + pan.getPlayer().vy)+1000)%1000;
 		      if(pan.isTeleporter) {
@@ -171,7 +173,7 @@ public class Fenetre extends JFrame {
 	  		      pan.getPlayer().vy = pan.getPlayer().vy + 3*Math.sin(pan.getPlayer().dir);
 	    	  }
 	    	  
-	      }
+	      }*/
 	      
 	      for(Player pl : pan.playerMap.values()) {
 	    	  if(!Objects.equals(pl.name,pan.getPlayer().name)) {
